@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -13,18 +14,24 @@ namespace WindowsFormsCSharpApp
     public partial class MainForm : Form
     {
         private BackGroundProcess backGroundProcess;
+        private CancellationTokenSource tokenSource;
 
         public MainForm()
         {
             InitializeComponent();
-            backGroundProcess = new BackGroundProcess();
+            tokenSource = new CancellationTokenSource();
+            backGroundProcess = new BackGroundProcess(tokenSource.Token);
+            backGroundProcess.X = 100;
+            //backGroundProcess.Y = 200; // これはできない
         }
 
+        // 単純なボタンのイベントハンドラ
         private void button1_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Hello!");
         }
 
+        // SubFormにデリゲートをセットする
         private void DispSubButton_Click(object sender, EventArgs e)
         {
             SubForm subObj = new SubForm();
@@ -32,20 +39,45 @@ namespace WindowsFormsCSharpApp
             subObj.Show();
         }
 
+        // SubFormから呼ばれるデリゲートメソッド
         private void UpdateTextHandler(string message)
         {
             DispTextBox.Text = message;
         }
 
-        private void StartBackGround_Click(object sender, EventArgs e)
+        // バックグラウンドプロセスの実行処理
+        async private void StartBackGround_Click(object sender, EventArgs e)
         {
-            backGroundProcess.updateBackGroundProcess += new UudateBackGroundProcess(UpdateBackGroundProgressBar);
+            backGroundProcess.updateBackGroundProcess += new UpdateBackGroundProcess(UpdateBackGroundProgressBar);
 
-            // 別タスクでプロセスを開始する
-            Task<Boolean> task = Task.Run(() =>
+            Status.Text = "Processing...";
+
+            try
             {
-                return backGroundProcess.StartProcess();
-            });
+                // 別タスクでプロセスを開始する
+                Boolean result = await Task.Run(async () =>
+                {
+                    return backGroundProcess.StartProcess();
+                });
+
+                // async修飾子によってスレッドの終了後に実行される
+                if (result)
+                {
+                    Status.Text = "Success!";
+                }
+                else
+                {
+                    Status.Text = "Failure!";
+                }
+            } catch(Exception exception) {
+                Status.Text = exception.Message;
+            }
+        }
+
+        // バックグラウンドプロセスを終了させる
+        private void StopBackGround_Click(object sender, EventArgs e)
+        {
+            tokenSource.Cancel();
         }
 
         // 別タスクからのコントロール操作はdelegateで呼び出しが必要
@@ -64,5 +96,15 @@ namespace WindowsFormsCSharpApp
             BackGroundProgress.Value = progress;
         }
 
+        // yield修飾子のサンプル
+        private void YieldStart_Click(object sender, EventArgs e)
+        {
+            var allStr = "";
+            foreach (var str in new YieldObject())
+            {
+                allStr += str;
+                YieldLabel.Text = allStr;
+            }
+        }
     }
 }

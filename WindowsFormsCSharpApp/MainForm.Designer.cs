@@ -33,6 +33,10 @@
             this.DispTextBox = new System.Windows.Forms.TextBox();
             this.StartBackGround = new System.Windows.Forms.Button();
             this.BackGroundProgress = new System.Windows.Forms.ProgressBar();
+            this.Status = new System.Windows.Forms.Label();
+            this.StopBackGround = new System.Windows.Forms.Button();
+            this.YieldStart = new System.Windows.Forms.Button();
+            this.YieldLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // button1
@@ -80,11 +84,53 @@
             this.BackGroundProgress.Size = new System.Drawing.Size(307, 23);
             this.BackGroundProgress.TabIndex = 5;
             // 
+            // Status
+            // 
+            this.Status.AutoSize = true;
+            this.Status.Location = new System.Drawing.Point(12, 125);
+            this.Status.Name = "Status";
+            this.Status.Size = new System.Drawing.Size(48, 15);
+            this.Status.TabIndex = 6;
+            this.Status.Text = "Status";
+            // 
+            // StopBackGround
+            // 
+            this.StopBackGround.Location = new System.Drawing.Point(143, 69);
+            this.StopBackGround.Name = "StopBackGround";
+            this.StopBackGround.Size = new System.Drawing.Size(126, 23);
+            this.StopBackGround.TabIndex = 7;
+            this.StopBackGround.Text = "StopBackGround";
+            this.StopBackGround.UseVisualStyleBackColor = true;
+            this.StopBackGround.Click += new System.EventHandler(this.StopBackGround_Click);
+            // 
+            // YieldStart
+            // 
+            this.YieldStart.Location = new System.Drawing.Point(12, 143);
+            this.YieldStart.Name = "YieldStart";
+            this.YieldStart.Size = new System.Drawing.Size(82, 23);
+            this.YieldStart.TabIndex = 8;
+            this.YieldStart.Text = "YieldStart";
+            this.YieldStart.UseVisualStyleBackColor = true;
+            this.YieldStart.Click += new System.EventHandler(this.YieldStart_Click);
+            // 
+            // YieldLabel
+            // 
+            this.YieldLabel.AutoSize = true;
+            this.YieldLabel.Location = new System.Drawing.Point(12, 169);
+            this.YieldLabel.Name = "YieldLabel";
+            this.YieldLabel.Size = new System.Drawing.Size(41, 15);
+            this.YieldLabel.TabIndex = 9;
+            this.YieldLabel.Text = "None";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(331, 211);
+            this.Controls.Add(this.YieldLabel);
+            this.Controls.Add(this.YieldStart);
+            this.Controls.Add(this.StopBackGround);
+            this.Controls.Add(this.Status);
             this.Controls.Add(this.BackGroundProgress);
             this.Controls.Add(this.StartBackGround);
             this.Controls.Add(this.DispTextBox);
@@ -104,6 +150,10 @@
         private System.Windows.Forms.TextBox DispTextBox;
         private System.Windows.Forms.Button StartBackGround;
         private System.Windows.Forms.ProgressBar BackGroundProgress;
+        private System.Windows.Forms.Label Status;
+        private System.Windows.Forms.Button StopBackGround;
+        private System.Windows.Forms.Button YieldStart;
+        private System.Windows.Forms.Label YieldLabel;
     }
 }
 
