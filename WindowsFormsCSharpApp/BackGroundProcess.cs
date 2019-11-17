@@ -27,6 +27,7 @@ namespace WindowsFormsCSharpApp
         {
             for (int i = 0; i <= 100; i+=10)
             {
+                // キャンセルがリクエストされたらExceptionを投げて終了する
                 if (cancellationToken.IsCancellationRequested)
                 {
                     cancellationToken.ThrowIfCancellationRequested();

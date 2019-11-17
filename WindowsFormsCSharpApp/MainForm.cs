@@ -44,10 +44,13 @@ namespace WindowsFormsCSharpApp
         // バックグラウンドプロセスの実行処理
         async private void StartBackGround_Click(object sender, EventArgs e)
         {
+            // cancel用のtokenを渡してインスタンス化
             tokenSource = new CancellationTokenSource();
             backGroundProcess = new BackGroundProcess(tokenSource.Token);
+            // プロパティへのアクセス
             backGroundProcess.X = 100;
             //backGroundProcess.Y = 200; // これはできない
+            // delegateによりプログレスバーの更新処理を登録
             backGroundProcess.updateBackGroundProcess += new UpdateBackGroundProcess(UpdateBackGroundProgressBar);
             Status.Text = "Processing...";
 
@@ -65,6 +68,7 @@ namespace WindowsFormsCSharpApp
                     Status.Text = "Failure!";
                 }
             } catch(Exception exception) {
+                // Stopボタンでtokenのcancelフラグが立つとBackGroundProcessでExceptionする
                 Status.Text = exception.Message;
             } finally {
                 tokenSource.Dispose();
@@ -77,6 +81,7 @@ namespace WindowsFormsCSharpApp
             if (tokenSource is null) {
                 return;
             }
+            // tokenのcancelフラグを立てる
             tokenSource.Cancel();
         }
 
@@ -100,6 +105,7 @@ namespace WindowsFormsCSharpApp
         private void YieldStart_Click(object sender, EventArgs e)
         {
             var allStr = "";
+            // yield return されるので配列の処理のように書ける
             foreach (var str in new YieldObject()) {
                 allStr += str;
                 YieldLabel.Text = allStr;
