@@ -19,10 +19,6 @@ namespace WindowsFormsCSharpApp
         public MainForm()
         {
             InitializeComponent();
-            tokenSource = new CancellationTokenSource();
-            backGroundProcess = new BackGroundProcess(tokenSource.Token);
-            backGroundProcess.X = 100;
-            //backGroundProcess.Y = 200; // これはできない
         }
 
         // 単純なボタンのイベントハンドラ
@@ -48,12 +44,14 @@ namespace WindowsFormsCSharpApp
         // バックグラウンドプロセスの実行処理
         async private void StartBackGround_Click(object sender, EventArgs e)
         {
+            tokenSource = new CancellationTokenSource();
+            backGroundProcess = new BackGroundProcess(tokenSource.Token);
+            backGroundProcess.X = 100;
+            //backGroundProcess.Y = 200; // これはできない
             backGroundProcess.updateBackGroundProcess += new UpdateBackGroundProcess(UpdateBackGroundProgressBar);
-
             Status.Text = "Processing...";
 
-            try
-            {
+            try {
                 // 別タスクでプロセスを開始する
                 Boolean result = await Task.Run(async () =>
                 {
@@ -61,22 +59,24 @@ namespace WindowsFormsCSharpApp
                 });
 
                 // async修飾子によってスレッドの終了後に実行される
-                if (result)
-                {
+                if (result) {
                     Status.Text = "Success!";
-                }
-                else
-                {
+                } else {
                     Status.Text = "Failure!";
                 }
             } catch(Exception exception) {
                 Status.Text = exception.Message;
+            } finally {
+                tokenSource.Dispose();
             }
         }
 
         // バックグラウンドプロセスを終了させる
         private void StopBackGround_Click(object sender, EventArgs e)
         {
+            if (tokenSource is null) {
+                return;
+            }
             tokenSource.Cancel();
         }
 
@@ -100,8 +100,7 @@ namespace WindowsFormsCSharpApp
         private void YieldStart_Click(object sender, EventArgs e)
         {
             var allStr = "";
-            foreach (var str in new YieldObject())
-            {
+            foreach (var str in new YieldObject()) {
                 allStr += str;
                 YieldLabel.Text = allStr;
             }
